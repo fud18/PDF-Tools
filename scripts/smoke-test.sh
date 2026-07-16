@@ -13,7 +13,7 @@
 set -Eeuo pipefail
 
 BASE_URL="${PDFTOOLS_BASE_URL:-https://pdf-tools.rstechwiz.net}"
-EXPECTED_VERSION="${PDFTOOLS_EXPECTED_VERSION:-0.4.0}"
+EXPECTED_VERSION="${PDFTOOLS_EXPECTED_VERSION:-0.5.0}"
 
 temporary_directory="$(mktemp -d)"
 
@@ -88,6 +88,7 @@ required_paths = {
     "/v1/metrics",
     "/v1/pdf/inspect",
     "/v1/pdf/fill",
+    "/v1/pdf/merge",
 }
 
 missing_paths = sorted(required_paths - set(schema["paths"]))

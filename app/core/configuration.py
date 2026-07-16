@@ -14,12 +14,14 @@ class Settings(BaseSettings):
     """Runtime configuration for the PDF Tools service."""
 
     app_name: str = "PDF Tools"
-    app_version: str = "0.4.0"
+    app_version: str = "0.5.0"
     environment: str = "production"
 
     clients_file: str = "/etc/pdf-tools/clients.json"
 
     max_upload_bytes: int = 104_857_600
+    max_merge_files: int = 50
+    max_merge_request_bytes: int = 209_715_200
     max_field_mapping_bytes: int = 1_048_576
     max_form_fields: int = 1_000
     max_field_name_length: int = 512

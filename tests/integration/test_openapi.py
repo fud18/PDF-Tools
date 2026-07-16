@@ -15,7 +15,7 @@ def test_openapi_schema_is_available() -> None:
     response = client.get("/openapi.json")
 
     assert response.status_code == 200
-    assert response.json()["info"]["version"] == "0.4.0"
+    assert response.json()["info"]["version"] == "0.5.0"
 
 
 def test_api_key_security_scheme_is_documented() -> None:

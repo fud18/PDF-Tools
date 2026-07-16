@@ -35,6 +35,13 @@ tags_metadata = [
         ),
     },
     {
+        "name": "PDF Merge",
+        "description": (
+            "Combine multiple PDF documents in submitted order while "
+            "preserving page dimensions and rotation."
+        ),
+    },
+    {
         "name": "PDF Forms",
         "description": ("Fill and optionally flatten interactive AcroForm PDF documents."),
     },

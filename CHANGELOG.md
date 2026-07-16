@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 This project adheres to Semantic Versioning.
 
+## [0.5.0] - 2026-07-16
+
+### Added
+- Authenticated `POST /v1/pdf/merge` endpoint
+- `pdf.merge` client permission
+- Ordered merging of repeated multipart `files` fields
+- Optional sanitized `output_name` form field
+- Configurable merge file-count and aggregate request-size limits
+- In-memory PDF merging without intentional document persistence
+- Preservation of page dimensions and rotation
+- Standard PDF Tools error responses for merge failures
+- OpenAPI documentation for binary merge responses
+- Unit and integration coverage for merge ordering, dimensions, rotation, authentication, authorization, limits, filenames, and validation
+
+### Changed
+- Updated application and package metadata to version 0.5.0
+- Updated release and smoke-test defaults for v0.5.0
+
 ## [0.4.0] - 2026-07-16
 
 ### Added
