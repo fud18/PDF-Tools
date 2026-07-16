@@ -36,7 +36,6 @@ from app.services.pdf_forms import (
     fill_pdf_form,
 )
 
-
 router = APIRouter(tags=["PDF Forms"])
 
 
@@ -87,9 +86,7 @@ async def fill_pdf_endpoint(
             "JSON object mapping PDF field names to values. "
             'Example: {"FirstName":"Cory","Approved":true}'
         ),
-        examples=[
-            '{"FirstName":"Cory","LastName":"Funk","Approved":true}'
-        ],
+        examples=['{"FirstName":"Cory","LastName":"Funk","Approved":true}'],
     ),
     flatten: bool = Form(
         False,
@@ -105,9 +102,7 @@ async def fill_pdf_endpoint(
             "do not exist in the uploaded PDF."
         ),
     ),
-    client: AuthenticatedClient = Depends(
-        require_permission("pdf.fill")
-    ),
+    client: AuthenticatedClient = Depends(require_permission("pdf.fill")),
     settings: Settings = Depends(get_settings),
 ) -> StreamingResponse:
     """Fill a PDF form and return the completed PDF."""

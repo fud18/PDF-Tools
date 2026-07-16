@@ -8,9 +8,8 @@ API keys, and document metadata are never intentionally logged.
 import json
 import logging
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
-
 
 _RESERVED_LOG_RECORD_FIELDS = {
     "args",
@@ -45,7 +44,7 @@ class JSONFormatter(logging.Formatter):
         """Return a JSON-formatted representation of the log record."""
 
         payload: dict[str, Any] = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),

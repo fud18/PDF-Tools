@@ -21,7 +21,6 @@ from app.core.authentication import (
 from app.core.configuration import Settings, get_settings
 from app.services.pdf_inspection import InvalidPDFError, inspect_pdf
 
-
 router = APIRouter(tags=["PDF Inspection"])
 
 
@@ -38,9 +37,7 @@ async def inspect_pdf_endpoint(
         ...,
         description="PDF document to inspect",
     ),
-    client: AuthenticatedClient = Depends(
-        require_permission("pdf.inspect")
-    ),
+    client: AuthenticatedClient = Depends(require_permission("pdf.inspect")),
     settings: Settings = Depends(get_settings),
 ) -> dict:
     """Return PDF metadata, form fields, and signature fields."""

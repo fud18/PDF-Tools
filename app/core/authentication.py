@@ -8,15 +8,15 @@ Plain-text API keys are never stored in the application repository.
 import hashlib
 import json
 import secrets
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from fastapi import Depends, HTTPException, Request, Security, status
 from fastapi.security import APIKeyHeader
 
 from app.core.configuration import Settings, get_settings
-
 
 api_key_header = APIKeyHeader(
     name="X-API-Key",
@@ -52,9 +52,7 @@ def _load_clients(clients_file: str) -> list[dict[str, Any]]:
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise ClientConfigurationError(
-            "The API client configuration could not be loaded."
-        ) from exc
+        raise ClientConfigurationError("The API client configuration could not be loaded.") from exc
 
     clients = document.get("clients")
 
@@ -127,16 +125,10 @@ def require_permission(
     ) -> AuthenticatedClient:
         """Authorize one authenticated client for the requested operation."""
 
-        if (
-            required_permission not in client.permissions
-            and "*" not in client.permissions
-        ):
+        if required_permission not in client.permissions and "*" not in client.permissions:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=(
-                    "The authenticated client is not authorized "
-                    "for this operation."
-                ),
+                detail=("The authenticated client is not authorized " "for this operation."),
             )
 
         request.state.authenticated_client = client.name

@@ -89,26 +89,18 @@ def fill_pdf_form(
     try:
         reader = PdfReader(BytesIO(pdf_data), strict=False)
     except (PdfReadError, OSError, ValueError) as exc:
-        raise InvalidPDFFormError(
-            "The uploaded file is not a readable PDF."
-        ) from exc
+        raise InvalidPDFFormError("The uploaded file is not a readable PDF.") from exc
 
     if reader.is_encrypted:
-        raise EncryptedPDFError(
-            "Encrypted PDFs are not supported by this endpoint."
-        )
+        raise EncryptedPDFError("Encrypted PDFs are not supported by this endpoint.")
 
     try:
         existing_fields = reader.get_fields() or {}
     except Exception as exc:
-        raise InvalidPDFFormError(
-            "The PDF form-field structure could not be read."
-        ) from exc
+        raise InvalidPDFFormError("The PDF form-field structure could not be read.") from exc
 
     if not existing_fields:
-        raise MissingFormFieldsError(
-            "The uploaded PDF does not contain AcroForm fields."
-        )
+        raise MissingFormFieldsError("The uploaded PDF does not contain AcroForm fields.")
 
     requested_names = set(field_values)
     existing_names = set(existing_fields)
@@ -142,9 +134,7 @@ def fill_pdf_form(
         writer.write(output_buffer)
 
     except Exception as exc:
-        raise InvalidPDFFormError(
-            "The PDF form could not be filled."
-        ) from exc
+        raise InvalidPDFFormError("The PDF form could not be filled.") from exc
 
     return (
         output_buffer.getvalue(),

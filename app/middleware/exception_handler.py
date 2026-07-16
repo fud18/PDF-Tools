@@ -1,6 +1,8 @@
 from fastapi.responses import JSONResponse
-from app.core.responses import fail
+
 from app.core.exceptions import PDFToolsException
+from app.core.responses import fail
+
 
 async def pdf_tools_exception_handler(request, exc: PDFToolsException):
     payload = fail(

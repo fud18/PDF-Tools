@@ -17,7 +17,6 @@ from fastapi import APIRouter, Depends, Request
 from app.core.authentication import AuthenticatedClient, require_api_key
 from app.core.configuration import Settings, get_settings
 
-
 router = APIRouter(tags=["Health"])
 
 _APPLICATION_STARTED = time.monotonic()

@@ -7,12 +7,10 @@ scalar field values are accepted. Nested objects and arrays are rejected.
 
 import json
 from dataclasses import dataclass
-from typing import TypeAlias
 
 from app.core.configuration import Settings
 
-
-FieldValue: TypeAlias = str | int | float | bool | None
+type FieldValue = str | int | float | bool | None
 
 
 @dataclass(frozen=True)
@@ -36,67 +34,44 @@ def parse_field_mapping(
     encoded_size = len(raw_mapping.encode("utf-8"))
 
     if encoded_size > settings.max_field_mapping_bytes:
-        raise InvalidFieldMappingError(
-            "The field mapping exceeds the configured size limit."
-        )
+        raise InvalidFieldMappingError("The field mapping exceeds the configured size limit.")
 
     try:
         document = json.loads(raw_mapping)
     except json.JSONDecodeError as exc:
-        raise InvalidFieldMappingError(
-            "The fields value must contain valid JSON."
-        ) from exc
+        raise InvalidFieldMappingError("The fields value must contain valid JSON.") from exc
 
     if not isinstance(document, dict):
-        raise InvalidFieldMappingError(
-            "The fields value must be a JSON object."
-        )
+        raise InvalidFieldMappingError("The fields value must be a JSON object.")
 
     if len(document) > settings.max_form_fields:
-        raise InvalidFieldMappingError(
-            "The field mapping contains too many entries."
-        )
+        raise InvalidFieldMappingError("The field mapping contains too many entries.")
 
     validated: dict[str, FieldValue] = {}
 
     for raw_name, raw_value in document.items():
         if not isinstance(raw_name, str):
-            raise InvalidFieldMappingError(
-                "Every PDF field name must be a string."
-            )
+            raise InvalidFieldMappingError("Every PDF field name must be a string.")
 
         field_name = raw_name.strip()
 
         if not field_name:
-            raise InvalidFieldMappingError(
-                "PDF field names cannot be empty."
-            )
+            raise InvalidFieldMappingError("PDF field names cannot be empty.")
 
         if len(field_name) > settings.max_field_name_length:
-            raise InvalidFieldMappingError(
-                "A PDF field name exceeds the configured length limit."
-            )
+            raise InvalidFieldMappingError("A PDF field name exceeds the configured length limit.")
 
         if isinstance(raw_value, (dict, list)):
-            raise InvalidFieldMappingError(
-                "PDF field values must be scalar values."
-            )
+            raise InvalidFieldMappingError("PDF field values must be scalar values.")
 
         if raw_value is not None and not isinstance(
             raw_value,
             (str, int, float, bool),
         ):
-            raise InvalidFieldMappingError(
-                "A PDF field value has an unsupported type."
-            )
+            raise InvalidFieldMappingError("A PDF field value has an unsupported type.")
 
-        if (
-            isinstance(raw_value, str)
-            and len(raw_value) > settings.max_field_value_length
-        ):
-            raise InvalidFieldMappingError(
-                "A PDF field value exceeds the configured length limit."
-            )
+        if isinstance(raw_value, str) and len(raw_value) > settings.max_field_value_length:
+            raise InvalidFieldMappingError("A PDF field value exceeds the configured length limit.")
 
         validated[field_name] = raw_value
 

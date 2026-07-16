@@ -11,9 +11,11 @@ import time
 import uuid
 
 from fastapi import Request, Response
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
 from starlette.types import ASGIApp
-
 
 logger = logging.getLogger("pdf_tools.requests")
 
@@ -27,22 +29,21 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self,
         request: Request,
-        call_next,
+        call_next: RequestResponseEndpoint,
     ) -> Response:
         """Process one request and add operational context."""
 
-        incoming_request_id = request.headers.get("X-Request-ID", "").strip()
+        incoming_request_id = request.headers.get(
+            "X-Request-ID",
+            "",
+        ).strip()
 
-        request_id = (
-            incoming_request_id[:128]
-            if incoming_request_id
-            else str(uuid.uuid4())
-        )
+        request_id = incoming_request_id[:128] if incoming_request_id else str(uuid.uuid4())
 
         request.state.request_id = request_id
 
         content_length_header = request.headers.get("content-length")
-        input_bytes = None
+        input_bytes: int | None = None
 
         if content_length_header and content_length_header.isdigit():
             input_bytes = int(content_length_header)
@@ -50,7 +51,7 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         started = time.perf_counter()
 
         try:
-            response = await call_next(request)
+            response: Response = await call_next(request)
         except Exception:
             duration_ms = round(
                 (time.perf_counter() - started) * 1000,
@@ -78,7 +79,7 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = request_id
 
         output_length_header = response.headers.get("content-length")
-        output_bytes = None
+        output_bytes: int | None = None
 
         if output_length_header and output_length_header.isdigit():
             output_bytes = int(output_length_header)

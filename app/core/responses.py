@@ -1,6 +1,7 @@
 from app.core.version import APP_VERSION
-from app.models.response import SuccessResponse
 from app.models.error import ErrorDetail, ErrorResponse
+from app.models.response import SuccessResponse
+
 
 def ok(request_id: str, data):
     return SuccessResponse(
@@ -8,6 +9,7 @@ def ok(request_id: str, data):
         version=APP_VERSION,
         data=data,
     )
+
 
 def fail(request_id: str, code: str, message: str, details=None):
     return ErrorResponse(

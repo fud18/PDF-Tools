@@ -14,7 +14,6 @@ from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
 
-
 settings = get_settings()
 
 configure_logging(settings.log_level)
@@ -22,9 +21,7 @@ configure_logging(settings.log_level)
 tags_metadata = [
     {
         "name": "Health",
-        "description": (
-            "Service availability and authenticated runtime diagnostics."
-        ),
+        "description": ("Service availability and authenticated runtime diagnostics."),
     },
     {
         "name": "PDF Inspection",
@@ -35,9 +32,7 @@ tags_metadata = [
     },
     {
         "name": "PDF Forms",
-        "description": (
-            "Fill and optionally flatten interactive AcroForm PDF documents."
-        ),
+        "description": ("Fill and optionally flatten interactive AcroForm PDF documents."),
     },
 ]
 
