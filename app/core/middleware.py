@@ -1,9 +1,9 @@
 """
 Request middleware for PDF Tools.
 
-Each request receives an X-Request-ID value. Requests are logged with
-operational metadata without recording document contents, field values,
-filenames, or API keys.
+Each request receives an X-Request-ID value. Requests are logged and measured
+using operational metadata without recording document contents, field values,
+filenames, API keys, or user-supplied URL values.
 """
 
 import logging
@@ -17,11 +17,17 @@ from starlette.middleware.base import (
 )
 from starlette.types import ASGIApp
 
+from app.core.metrics import (
+    HTTP_REQUESTS_IN_PROGRESS,
+    normalize_route,
+    record_request,
+)
+
 logger = logging.getLogger("pdf_tools.requests")
 
 
 class RequestContextMiddleware(BaseHTTPMiddleware):
-    """Add request IDs, timing data, and sanitized request logging."""
+    """Add request IDs, timing data, metrics, and sanitized request logging."""
 
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
@@ -48,33 +54,43 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
         if content_length_header and content_length_header.isdigit():
             input_bytes = int(content_length_header)
 
+        method = request.method
         started = time.perf_counter()
+
+        HTTP_REQUESTS_IN_PROGRESS.labels(method=method).inc()
 
         try:
             response: Response = await call_next(request)
         except Exception:
-            duration_ms = round(
-                (time.perf_counter() - started) * 1000,
-                3,
+            duration_seconds = time.perf_counter() - started
+            route = normalize_route(request.scope)
+
+            record_request(
+                method=method,
+                route=route,
+                status_code=500,
+                duration_seconds=duration_seconds,
+                input_bytes=input_bytes,
+                output_bytes=None,
             )
 
             logger.exception(
                 "Request failed",
                 extra={
                     "request_id": request_id,
-                    "method": request.method,
-                    "path": request.url.path,
+                    "method": method,
+                    "path": route,
                     "status_code": 500,
-                    "duration_ms": duration_ms,
+                    "duration_ms": round(duration_seconds * 1000, 3),
                     "input_bytes": input_bytes,
                 },
             )
             raise
+        finally:
+            HTTP_REQUESTS_IN_PROGRESS.labels(method=method).dec()
 
-        duration_ms = round(
-            (time.perf_counter() - started) * 1000,
-            3,
-        )
+        duration_seconds = time.perf_counter() - started
+        duration_ms = round(duration_seconds * 1000, 3)
 
         response.headers["X-Request-ID"] = request_id
 
@@ -83,6 +99,17 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
 
         if output_length_header and output_length_header.isdigit():
             output_bytes = int(output_length_header)
+
+        route = normalize_route(request.scope)
+
+        record_request(
+            method=method,
+            route=route,
+            status_code=response.status_code,
+            duration_seconds=duration_seconds,
+            input_bytes=input_bytes,
+            output_bytes=output_bytes,
+        )
 
         client_name = getattr(
             request.state,
@@ -95,8 +122,8 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
             extra={
                 "request_id": request_id,
                 "client": client_name,
-                "method": request.method,
-                "path": request.url.path,
+                "method": method,
+                "path": route,
                 "status_code": response.status_code,
                 "duration_ms": duration_ms,
                 "input_bytes": input_bytes,

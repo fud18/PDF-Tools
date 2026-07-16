@@ -24,6 +24,10 @@ tags_metadata = [
         "description": ("Service availability and authenticated runtime diagnostics."),
     },
     {
+        "name": "Observability",
+        "description": ("Authenticated Prometheus metrics and operational service telemetry."),
+    },
+    {
         "name": "PDF Inspection",
         "description": (
             "Inspect PDF metadata, page counts, AcroForm fields, "

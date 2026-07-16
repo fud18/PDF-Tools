@@ -11,6 +11,12 @@ Group=pdftools
 
 WorkingDirectory=/opt/pdf-tools
 EnvironmentFile=/etc/pdf-tools/pdf-tools.env
+Environment=PROMETHEUS_MULTIPROC_DIR=/run/pdf-tools/prometheus
+
+RuntimeDirectory=pdf-tools
+RuntimeDirectoryMode=0750
+
+ExecStartPre=/bin/sh -c 'rm -rf /run/pdf-tools/prometheus && mkdir -p /run/pdf-tools/prometheus'
 
 ExecStart=/opt/pdf-tools/venv/bin/uvicorn app.main:app \
     --host 0.0.0.0 \
