@@ -1,0 +1,41 @@
+"""
+PDF Tools application configuration.
+
+Runtime settings are loaded from environment variables. Secrets and
+environment-specific configuration remain outside the Git repository.
+"""
+
+from functools import lru_cache
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    """Runtime configuration for the PDF Tools service."""
+
+    app_name: str = "PDF Tools"
+    app_version: str = "0.3.0"
+    environment: str = "production"
+
+    clients_file: str = "/etc/pdf-tools/clients.json"
+
+    max_upload_bytes: int = 104_857_600
+    max_field_mapping_bytes: int = 1_048_576
+    max_form_fields: int = 1_000
+    max_field_name_length: int = 512
+    max_field_value_length: int = 32_768
+
+    log_level: str = "INFO"
+    worker_count: int = 2
+
+    model_config = SettingsConfigDict(
+        env_prefix="PDFTOOLS_",
+        case_sensitive=False,
+    )
+
+
+@lru_cache
+def get_settings() -> Settings:
+    """Return the cached application settings."""
+
+    return Settings()

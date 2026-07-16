@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic-settings
+pypdf>=6.14,<7
+psutil
