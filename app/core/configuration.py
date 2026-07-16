@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """Runtime configuration for the PDF Tools service."""
 
     app_name: str = "PDF Tools"
-    app_version: str = "0.3.0"
+    app_version: str = "0.4.0"
     environment: str = "production"
 
     clients_file: str = "/etc/pdf-tools/clients.json"

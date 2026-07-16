@@ -17,6 +17,7 @@ from fastapi import (
 
 from app.core.authentication import AuthenticatedClient, require_permission
 from app.core.configuration import Settings, get_settings
+from app.core.openapi import AUTHENTICATED_ERROR_RESPONSES
 from app.core.responses import ok
 from app.models.response import SuccessResponse
 from app.services.pdf_inspection import InvalidPDFError, inspect_pdf
@@ -32,6 +33,8 @@ router = APIRouter(tags=["PDF Inspection"])
         "field types, and signature fields."
     ),
     response_model=SuccessResponse,
+    responses=AUTHENTICATED_ERROR_RESPONSES,
+    response_description="PDF metadata and interactive field information.",
 )
 async def inspect_pdf_endpoint(
     request: Request,

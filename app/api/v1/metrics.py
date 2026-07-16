@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, Request, Response
 
 from app.core.authentication import AuthenticatedClient, require_api_key
 from app.core.metrics import CONTENT_TYPE_LATEST, render_metrics
+from app.core.openapi import AUTHENTICATED_ERROR_RESPONSES
 
 router = APIRouter(tags=["Observability"])
 
@@ -23,6 +24,7 @@ router = APIRouter(tags=["Observability"])
     ),
     response_class=Response,
     responses={
+        **AUTHENTICATED_ERROR_RESPONSES,
         200: {
             "description": "Prometheus text exposition data.",
             "content": {
@@ -33,7 +35,7 @@ router = APIRouter(tags=["Observability"])
                     )
                 }
             },
-        }
+        },
     },
 )
 def metrics_endpoint(

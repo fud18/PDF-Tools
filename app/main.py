@@ -21,7 +21,7 @@ configure_logging(settings.log_level)
 tags_metadata = [
     {
         "name": "Health",
-        "description": ("Service availability and authenticated runtime diagnostics."),
+        "description": ("Public service availability and authenticated runtime diagnostics."),
     },
     {
         "name": "Observability",
@@ -30,8 +30,8 @@ tags_metadata = [
     {
         "name": "PDF Inspection",
         "description": (
-            "Inspect PDF metadata, page counts, AcroForm fields, "
-            "field types, and signature fields."
+            "Inspect PDF metadata, page counts, AcroForm fields, field types, "
+            "encryption state, and signature fields."
         ),
     },
     {
@@ -45,8 +45,17 @@ app = FastAPI(
     summary="Secure internal PDF-processing API",
     description=(
         "PDF Tools is a reusable internal REST API for inspecting and "
-        "processing PDF documents. Uploaded documents are processed in "
-        "memory and are not intentionally persisted."
+        "processing PDF documents.\n\n"
+        "## Authentication\n\n"
+        "Protected endpoints require an `X-API-Key` request header. Select "
+        "**Authorize** in Swagger UI and enter a valid client API key.\n\n"
+        "## Privacy\n\n"
+        "Uploaded documents are processed in memory and are not intentionally "
+        "persisted. PDF contents, field values, filenames, and API keys are "
+        "not intentionally logged.\n\n"
+        "## Request tracing\n\n"
+        "Every response includes an `X-Request-ID` header. JSON responses also "
+        "include the request ID in the response body."
     ),
     version=settings.app_version,
     openapi_tags=tags_metadata,
@@ -55,6 +64,16 @@ app = FastAPI(
     openapi_url="/openapi.json",
     contact={
         "name": "PDF Tools Administrator",
+    },
+    license_info={
+        "name": "MIT License",
+    },
+    swagger_ui_parameters={
+        "displayRequestDuration": True,
+        "filter": True,
+        "persistAuthorization": True,
+        "syntaxHighlight.theme": "agate",
+        "tryItOutEnabled": True,
     },
 )
 
@@ -86,5 +105,6 @@ def root() -> dict[str, str]:
         "service": settings.app_name,
         "version": settings.app_version,
         "documentation": "/docs",
+        "openapi": "/openapi.json",
         "health": "/v1/health",
     }

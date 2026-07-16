@@ -16,6 +16,10 @@ from fastapi import APIRouter, Depends, Request
 
 from app.core.authentication import AuthenticatedClient, require_api_key
 from app.core.configuration import Settings, get_settings
+from app.core.openapi import (
+    AUTHENTICATED_ERROR_RESPONSES,
+    PUBLIC_ERROR_RESPONSES,
+)
 from app.core.responses import ok
 from app.models.response import SuccessResponse
 
@@ -28,6 +32,8 @@ _APPLICATION_STARTED = time.monotonic()
     "/health",
     summary="Check service health",
     response_model=SuccessResponse,
+    responses=PUBLIC_ERROR_RESPONSES,
+    response_description="Service health information.",
 )
 def health_check(
     request: Request,
@@ -49,6 +55,8 @@ def health_check(
     "/health/details",
     summary="Get detailed service health",
     response_model=SuccessResponse,
+    responses=AUTHENTICATED_ERROR_RESPONSES,
+    response_description="Authenticated runtime and resource information.",
 )
 def detailed_health_check(
     request: Request,
