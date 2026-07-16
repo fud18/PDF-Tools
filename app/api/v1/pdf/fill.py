@@ -24,6 +24,7 @@ from app.core.authentication import (
     require_permission,
 )
 from app.core.configuration import Settings, get_settings
+from app.core.version import APP_VERSION
 from app.models.pdf_fill import (
     InvalidFieldMappingError,
     parse_field_mapping,
@@ -181,6 +182,7 @@ async def fill_pdf_endpoint(
         "X-PDF-Fields-Applied": str(fields_applied),
         "X-PDF-Unknown-Fields-Ignored": str(unknown_fields_ignored),
         "X-PDF-Flattened": str(flatten).lower(),
+        "X-PDF-Tools-Version": APP_VERSION,
     }
 
     return StreamingResponse(

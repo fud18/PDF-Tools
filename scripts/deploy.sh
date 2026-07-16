@@ -13,7 +13,7 @@
 
 set -Eeuo pipefail
 
-SOURCE_DIRECTORY="/opt/server-install-instructions/PDF-Tools"
+SOURCE_DIRECTORY="/opt/PDF-Tools"
 DEPLOY_DIRECTORY="/opt/pdf-tools"
 SERVICE_NAME="pdf-tools"
 SERVICE_USER="pdftools"
@@ -57,8 +57,10 @@ fi
 
 chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${DEPLOY_DIRECTORY}"
 
-if systemctl list-unit-files | grep -q "^${SERVICE_NAME}.service"; then
-    systemctl restart "${SERVICE_NAME}"
+if systemctl is-enabled "${SERVICE_NAME}.service" >/dev/null 2>&1; then
+    systemctl restart "${SERVICE_NAME}.service"
+else
+    echo "WARNING: ${SERVICE_NAME}.service is not enabled; skipping restart."
 fi
 
 echo "PDF Tools deployment completed."

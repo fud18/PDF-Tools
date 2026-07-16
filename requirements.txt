@@ -4,3 +4,4 @@ pypdf
 python-multipart
 pydantic
 pydantic-settings
+psutil

@@ -10,15 +10,15 @@ from fastapi import (
     Depends,
     File,
     HTTPException,
+    Request,
     UploadFile,
     status,
 )
 
-from app.core.authentication import (
-    AuthenticatedClient,
-    require_permission,
-)
+from app.core.authentication import AuthenticatedClient, require_permission
 from app.core.configuration import Settings, get_settings
+from app.core.responses import ok
+from app.models.response import SuccessResponse
 from app.services.pdf_inspection import InvalidPDFError, inspect_pdf
 
 router = APIRouter(tags=["PDF Inspection"])
@@ -31,15 +31,17 @@ router = APIRouter(tags=["PDF Inspection"])
         "Returns page count, PDF metadata, AcroForm field definitions, "
         "field types, and signature fields."
     ),
+    response_model=SuccessResponse,
 )
 async def inspect_pdf_endpoint(
+    request: Request,
     file: UploadFile = File(
         ...,
         description="PDF document to inspect",
     ),
     client: AuthenticatedClient = Depends(require_permission("pdf.inspect")),
     settings: Settings = Depends(get_settings),
-) -> dict:
+) -> SuccessResponse:
     """Return PDF metadata, form fields, and signature fields."""
 
     content_type = (file.content_type or "").lower()
@@ -78,7 +80,10 @@ async def inspect_pdf_endpoint(
             detail=str(exc),
         ) from exc
 
-    return {
-        "authenticated_client": client.name,
-        **result,
-    }
+    return ok(
+        request_id=request.state.request_id,
+        data={
+            "authenticated_client": client.name,
+            **result,
+        },
+    )
