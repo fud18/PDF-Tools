@@ -1,0 +1,3 @@
+APP_NAME = "PDF Tools"
+API_VERSION = "v1"
+APP_VERSION = "0.4.0"
