@@ -166,7 +166,7 @@ async def test_drive_merge_preserves_source_order() -> None:
     assert result.page_count == 2
     assert result.source_file_count == 2
     assert result.replaced_file_count == 0
-    assert drive.uploaded_name == "League_Packet.pdf"
+    assert drive.uploaded_name == "League Packet.pdf"
     assert drive.uploaded_data is not None
 
     reader = PdfReader(BytesIO(drive.uploaded_data))

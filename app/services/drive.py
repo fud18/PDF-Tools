@@ -8,6 +8,8 @@ existing exact-name output files after the new upload succeeds.
 
 from dataclasses import dataclass
 
+from app.utils.filenames import sanitize_drive_output_name
+
 from app.clients.google_drive import (
     GOOGLE_DRIVE_FOLDER_MIME_TYPE,
     PDF_MIME_TYPE,
@@ -17,7 +19,6 @@ from app.clients.google_drive import (
 from app.services.pdf_merge import (
     PDFMergeError,
     merge_pdf_documents,
-    sanitize_output_name,
 )
 
 
@@ -83,7 +84,7 @@ async def merge_drive_pdfs(
     if len(source_file_ids) > maximum_files:
         raise DriveMergeError("The request contains more Drive files than the configured limit.")
 
-    safe_output_name = sanitize_output_name(output_name)
+    safe_output_name = sanitize_drive_output_name(output_name)
 
     folder = await drive_client.get_file_metadata(destination_folder_id)
 
