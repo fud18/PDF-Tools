@@ -22,6 +22,10 @@ STANDARD_ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
         "model": ErrorResponse,
         "description": "The authenticated client lacks the required permission.",
     },
+    409: {
+        "model": ErrorResponse,
+        "description": "The requested output conflicts with an existing resource.",
+    },
     413: {
         "model": ErrorResponse,
         "description": "The uploaded file exceeds the configured size limit.",

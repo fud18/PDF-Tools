@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog.
 This project adheres to Semantic Versioning.
 
+## [0.6.0] - 2026-07-20
+
+### Added
+- Authenticated `POST /v1/pdf/merge-drive` endpoint
+- Dedicated `pdf.merge-drive` client permission
+- Temporary delegated Google OAuth bearer-token support
+- Direct downloads of Drive-hosted PDF documents
+- Direct upload of completed PDF packets to Google Drive
+- My Drive and Shared Drive compatibility
+- Exact-name output conflict detection
+- Safe overwrite workflow that uploads before moving predecessors to trash
+- Configurable Drive file-count, aggregate-size, and timeout limits
+- Standard PDF Tools errors for Drive authentication, authorization, lookup, download, upload, and file-type failures
+- Unit and integration coverage for Drive packet workflows
+
+### Changed
+- Updated application and package metadata to version 0.6.0
+- Expanded production smoke tests to require the Drive merge endpoint
+- Kept PDF bytes out of the Google Apps Script request path
+
+### Security
+- Google OAuth bearer tokens are request-scoped and are not stored
+- PDF Tools API-key authentication remains mandatory
+- Drive operations execute only with the effective Google user's permissions
+
 ## [0.5.0] - 2026-07-16
 
 ### Added

@@ -7,6 +7,7 @@ from app.api.v1.metrics import router as metrics_router
 from app.api.v1.pdf.fill import router as fill_router
 from app.api.v1.pdf.inspect import router as inspect_router
 from app.api.v1.pdf.merge import router as merge_router
+from app.api.v1.pdf.merge_drive import router as merge_drive_router
 
 router = APIRouter(prefix="/v1")
 
@@ -14,4 +15,5 @@ router.include_router(health_router)
 router.include_router(metrics_router)
 router.include_router(inspect_router, prefix="/pdf")
 router.include_router(merge_router, prefix="/pdf")
+router.include_router(merge_drive_router, prefix="/pdf")
 router.include_router(fill_router, prefix="/pdf")

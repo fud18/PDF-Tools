@@ -22,7 +22,7 @@ def test_root_endpoint_returns_service_information() -> None:
     payload = response.json()
 
     assert payload["service"] == "PDF Tools"
-    assert payload["version"] == "0.5.0"
+    assert payload["version"] == "0.6.0"
     assert payload["documentation"] == "/docs"
     assert payload["openapi"] == "/openapi.json"
     assert payload["health"] == "/v1/health"
@@ -39,10 +39,10 @@ def test_public_health_endpoint_uses_standard_response_envelope() -> None:
     payload = response.json()
 
     assert payload["success"] is True
-    assert payload["version"] == "0.5.0"
+    assert payload["version"] == "0.6.0"
     assert payload["request_id"] == response.headers["X-Request-ID"]
     assert payload["data"]["service"] == "PDF Tools"
-    assert payload["data"]["version"] == "0.5.0"
+    assert payload["data"]["version"] == "0.6.0"
     assert payload["data"]["status"] == "healthy"
 
 

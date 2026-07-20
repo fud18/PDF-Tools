@@ -18,10 +18,10 @@ class SuccessResponse(BaseModel):
                     "success": True,
                     "request_id": "59774624-ebb1-408f-beb2-54b7c6004f6a",
                     "timestamp": "2026-07-16T19:49:26.786384Z",
-                    "version": "0.5.0",
+                    "version": "0.6.0",
                     "data": {
                         "service": "PDF Tools",
-                        "version": "0.5.0",
+                        "version": "0.6.0",
                         "status": "healthy",
                     },
                 }
